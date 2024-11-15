@@ -23,7 +23,6 @@ def main():
     qbt_client = qbittorrentapi.Client(**conn_info)
 
     while True:
-        
         try:
             r = requests.get(gluetun_url, headers=gluetun_headers)
             r_json = r.json()
@@ -32,11 +31,13 @@ def main():
             #print("VPN forwarded port: " + str(vpn_port))
         except Exception as e:
             print("Error contacting gluetun: " + str(e))
+            continue
         try:
             qbt_client.auth_log_in()
 
         except qbittorrentapi.LoginFailed as e:
             print(e)
+            continue
         
         try:
             qbit_port = qbt_client.app_preferences().get("listen_port")
@@ -49,11 +50,13 @@ def main():
                 print("Port matches vpn")
         except:
             traceback.print_exception()
+            continue
             
         try:
             qbt_client.auth_log_out()
         except:
             traceback.print_exception()
+            continue
         
         time.sleep(sleep_time)
 
