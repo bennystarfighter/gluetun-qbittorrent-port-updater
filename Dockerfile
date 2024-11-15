@@ -13,5 +13,4 @@ ENV QBIT_PORT=8080
 ENV QBIT_USERNAME=admin
 ENV QBIT_PASSWORD=password
 
-#ENTRYPOINT [ "bash" ]
-ENTRYPOINT ["python", "-u", "/app/service.py" ]
+ENTRYPOINT [ "bash", "-c", "while true; do echo starting script; python /app/service.py; sleep 5; done"]

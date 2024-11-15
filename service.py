@@ -23,6 +23,7 @@ def main():
     qbt_client = qbittorrentapi.Client(**conn_info)
 
     while True:
+        time.sleep(sleep_time)
         try:
             r = requests.get(gluetun_url, headers=gluetun_headers)
             r_json = r.json()
@@ -57,8 +58,6 @@ def main():
         except:
             traceback.print_exception()
             continue
-        
-        time.sleep(sleep_time)
 
 def handler(signum, frame):
     print('Exiting')
