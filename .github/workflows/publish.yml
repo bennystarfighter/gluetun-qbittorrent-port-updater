@@ -15,5 +15,4 @@ jobs:
       - name: Build and publish docker image
         run: |
           docker build . --tag ghcr.io/bennystarfighter/gluetun-qbittorrent-port-updater:latest
-          docker run ghcr.io/bennystarfighter/gluetun-qbittorrent-port-updater:latest
           docker push ghcr.io/bennystarfighter/gluetun-qbittorrent-port-updater:latest
