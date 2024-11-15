@@ -23,41 +23,42 @@ def main():
     qbt_client = qbittorrentapi.Client(**conn_info)
 
     while True:
+        print("Waiting for " + str(sleep_time) + " seconds")
         time.sleep(sleep_time)
         try:
             r = requests.get(gluetun_url, headers=gluetun_headers)
             r_json = r.json()
             vpn_port = r_json["port"]
 
-            #print("VPN forwarded port: " + str(vpn_port))
+            try:
+                qbt_client.auth_log_in()
+                try:
+                    qbit_port = qbt_client.app_preferences().get("listen_port")
+                    #print("Qbittorrent is listening on:", qbit_port)
+                    if qbit_port != vpn_port:
+                        print("Wrong port defined, changing!")
+                        qbt_client.app_set_preferences({"listen_port": vpn_port})
+                        print("Listening port changed to:", vpn_port)
+                    else:
+                        print("Port matches vpn")
+                    try:
+                        qbt_client.auth_log_out()
+                    except:
+                        traceback.print_exception()
+                        continue
+
+                except:
+                    traceback.print_exception()
+                    continue
+                    
+            except qbittorrentapi.LoginFailed as e:
+                print(e)
+                continue
+            
         except Exception as e:
             print("Error contacting gluetun: " + str(e))
             continue
-        try:
-            qbt_client.auth_log_in()
-
-        except qbittorrentapi.LoginFailed as e:
-            print(e)
-            continue
         
-        try:
-            qbit_port = qbt_client.app_preferences().get("listen_port")
-            #print("Qbittorrent is listening on:", qbit_port)
-            if qbit_port != vpn_port:
-                print("Wrong port defined, changing!")
-                qbt_client.app_set_preferences({"listen_port": vpn_port})
-                print("Listening port changed to:", vpn_port)
-            else:
-                print("Port matches vpn")
-        except:
-            traceback.print_exception()
-            continue
-            
-        try:
-            qbt_client.auth_log_out()
-        except:
-            traceback.print_exception()
-            continue
 
 def handler(signum, frame):
     print('Exiting')
